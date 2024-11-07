@@ -1,6 +1,5 @@
 import pygame
-
-PLAYER_RADIUS = 20
+from constants import *
 
 class CircleShape(pygame.sprite.Sprite):
     def __init__(self, x, y, radius):
