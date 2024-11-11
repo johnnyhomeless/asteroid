@@ -2,7 +2,9 @@ import pygame
 from circleshape import CircleShape
 from constants import (PLAYER_RADIUS,
                        PLAYER_TURN_SPEED,
-                       PLAYER_SPEED)
+                       PLAYER_SPEED,
+                       SCREEN_WIDTH,
+                       SCREEN_HEIGHT)
 
 class Player(CircleShape):
     def __init__(self, x, y):
@@ -41,6 +43,16 @@ class Player(CircleShape):
         
          if keys[pygame.K_s]:
               self.move(dt * -1)
+         
+         if self.position.x > SCREEN_WIDTH:
+              self.position.x = 0
+         elif self.position.x < 0:
+              self.position.x = SCREEN_WIDTH
+         
+         if self.position.y > SCREEN_HEIGHT:
+              self.position.y = 0 
+         elif self.position.y < 0:
+              self.position.y = SCREEN_HEIGHT
 
     
     def move(self, dt):
