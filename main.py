@@ -21,9 +21,9 @@ def main():
 
     while True:
        
-        player.update(dt)
+        updatable.update()
         pygame.Surface.fill(screen, (0, 0, 0))
-        player.draw(screen)
+        drawable.draw(screen)
         pygame.display.flip()
 
         new_dt = clock.tick(60)
