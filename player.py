@@ -12,13 +12,11 @@ class Player(CircleShape, pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rotation = 0
         
-        # Create the image surface
         self.image = pygame.Surface((PLAYER_RADIUS * 3, PLAYER_RADIUS * 3), pygame.SRCALPHA)
         self.rect = self.image.get_rect()
         self.update_sprite()
 
     def triangle(self):
-        # Calculate triangle points relative to sprite surface center
         center = pygame.Vector2(self.image.get_width() / 2, self.image.get_height() / 2)
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
@@ -28,11 +26,8 @@ class Player(CircleShape, pygame.sprite.Sprite):
         return [a, b, c]
 
     def update_sprite(self):
-        # Clear the surface
         self.image.fill((0, 0, 0, 0))
-        # Draw the triangle on the surface
         pygame.draw.polygon(self.image, "white", self.triangle(), 2)
-        # Update rect position
         self.rect.center = self.position
 
     def rotate(self, dt):
@@ -64,7 +59,6 @@ class Player(CircleShape, pygame.sprite.Sprite):
         elif self.position.y < 0:
             self.position.y = SCREEN_HEIGHT
 
-        # Update the sprite's position
         self.update_sprite()
 
     def move(self, dt):
