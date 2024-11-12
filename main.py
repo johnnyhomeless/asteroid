@@ -1,6 +1,8 @@
 import pygame
 from constants import *
-from  player import Player
+from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
     print("Starting asteroids!")
@@ -13,8 +15,11 @@ def main():
     dt = 0
 
     sprites = pygame.sprite.Group()
-    
+    asteroid_group = pygame.sprite.Group() 
+
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    asteroidfield = AsteroidField()
+   
     sprites.add(player)
 
     running = True
@@ -25,9 +30,11 @@ def main():
                 break
 
         sprites.update(dt)
+        asteroidfield.update(dt)
 
         screen.fill((0, 0, 0))
         sprites.draw(screen)
+        asteroidfield.asteroids.draw(screen)
         pygame.display.flip()
 
         dt = clock.tick(60) / 1000.0
