@@ -4,6 +4,7 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from text_manager import TextManager
+from score import Score
 import sys
 
 def init_game():
@@ -20,8 +21,9 @@ def init_game():
     asteroidfield = AsteroidField()
     shots = pygame.sprite.Group()
     sprites.add(player)
-    
-    return screen, text_manager, sprites, player, asteroidfield, shots
+    score = Score()
+
+    return screen, text_manager, sprites, player, asteroidfield, shots, score
 
 def handle_events(running, show_start_message, show_logo, space_just_pressed):
     for event in pygame.event.get():
@@ -44,13 +46,19 @@ def handle_shooting(player, shots, game_over, show_start_message, space_just_pre
             if new_shot:
                 shots.add(new_shot)
 
-def check_collisions(player, asteroidfield, shots):
+def check_collisions(player, asteroidfield, shots, score):
     game_over = False
     for asteroid in list(asteroidfield.asteroids): 
         for bullet in shots:
             distance = bullet.position.distance_to(asteroid.position)
             if distance <= bullet.radius + asteroid.radius:
                 bullet.kill()
+                if asteroid.radius >= 40:
+                    score.add_points(20)
+                elif asteroid.radius >= 25:
+                    score.add_points(50)
+                else:
+                    score.add_points(100)
                 new_asteroids = asteroid.split()
                 asteroidfield.asteroids.add(*new_asteroids)
        
@@ -64,9 +72,13 @@ def update_game(sprites, asteroidfield, shots, dt):
     asteroidfield.update(dt)
     shots.update(dt)
 
-def draw_game(screen, sprites, asteroidfield, shots, text_manager, show_logo, show_start_message, game_over, dt):
+def draw_game(screen, sprites, asteroidfield, shots, text_manager, show_logo, show_start_message, game_over, dt, score):
     screen.fill((0, 0, 0))
     
+    font = pygame.font.Font("fonts/INVASION2000.TTF", 20)
+    score_text = font.render(f'Score: {score.points}', True, (255, 255, 255))
+    screen.blit(score_text, (10, 10))
+
     if show_start_message:
         text_manager.update_start_message(dt)
     
@@ -78,42 +90,42 @@ def draw_game(screen, sprites, asteroidfield, shots, text_manager, show_logo, sh
     text_manager.draw(screen, show_logo, show_start_message, game_over)
 
 def main():
-    screen, text_manager, sprites, player, asteroidfield, shots = init_game()
-    
-    clock = pygame.time.Clock()
-    FIXED_DT = 1/60
-    
-    running = True
-    game_over = False
-    show_start_message = True
-    show_logo = True
-    space_just_pressed = False
+   screen, text_manager, sprites, player, asteroidfield, shots, score = init_game()
+   
+   clock = pygame.time.Clock()
+   FIXED_DT = 1/60
+   
+   running = True
+   game_over = False
+   show_start_message = True
+   show_logo = True
+   space_just_pressed = False
 
-    while running:
-        dt = FIXED_DT
-        
-        running, show_start_message, show_logo, space_just_pressed = handle_events(
-            running, show_start_message, show_logo, space_just_pressed)
-        
-        handle_shooting(player, shots, game_over, show_start_message, space_just_pressed)
-        
-        if not game_over and not show_start_message:
-            update_game(sprites, asteroidfield, shots, dt)
-        
-        game_over = check_collisions(player, asteroidfield, shots)
-        
-        draw_game(screen, sprites, asteroidfield, shots, text_manager, 
-                 show_logo, show_start_message, game_over, dt)
-        
-        if game_over:
-            pygame.display.flip()
-            pygame.time.wait(2000)
-            running = False
+   while running:
+       dt = FIXED_DT
+       
+       running, show_start_message, show_logo, space_just_pressed = handle_events(
+           running, show_start_message, show_logo, space_just_pressed)
+       
+       handle_shooting(player, shots, game_over, show_start_message, space_just_pressed)
+       
+       if not game_over and not show_start_message:
+           update_game(sprites, asteroidfield, shots, dt)
+       
+       game_over = check_collisions(player, asteroidfield, shots, score)
+       
+       draw_game(screen, sprites, asteroidfield, shots, text_manager, 
+                show_logo, show_start_message, game_over, dt, score)
+       
+       if game_over:
+           pygame.display.flip()
+           pygame.time.wait(2000)
+           running = False
 
-        pygame.display.flip()   
-        clock.tick(60)  
+       pygame.display.flip()   
+       clock.tick(60)  
 
-    pygame.quit()
+   pygame.quit()
 
 if __name__ == "__main__":
     main()
