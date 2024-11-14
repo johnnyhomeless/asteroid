@@ -46,12 +46,14 @@ def handle_shooting(player, shots, game_over, show_start_message, space_just_pre
 
 def check_collisions(player, asteroidfield, shots):
     game_over = False
-    for asteroid in asteroidfield.asteroids:
+    for asteroid in list(asteroidfield.asteroids): 
         for bullet in shots:
             distance = bullet.position.distance_to(asteroid.position)
             if distance <= bullet.radius + asteroid.radius:
                 bullet.kill()
-                asteroid.kill()
+                new_asteroids = asteroid.split()
+                asteroidfield.asteroids.add(*new_asteroids)
+       
         if player.collision(asteroid):
             print("Game over!")
             game_over = True
