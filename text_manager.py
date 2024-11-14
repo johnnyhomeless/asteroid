@@ -1,4 +1,3 @@
-# text_manager.py
 import pygame
 from constants import *
 
